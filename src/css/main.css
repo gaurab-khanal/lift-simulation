@@ -1,0 +1,42 @@
+.askdetails{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    background-color: aliceblue;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+body{
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    padding: 0;
+}
+
+.product{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    background-color: aliceblue;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.floor{
+    display: flex;
+    gap: 100px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.floor .keys {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+}
