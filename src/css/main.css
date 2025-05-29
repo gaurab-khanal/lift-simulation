@@ -1,42 +1,100 @@
-.askdetails{
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    height: 100%;
-    background-color: aliceblue;
-    border-radius: 10px;
-    padding: 10px;
+.askdetails {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+  background-color: aliceblue;
+  border-radius: 10px;
+  padding: 10px;
 }
 
-body{
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
-    margin: 10px;
-    padding: 0;
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 10px;
+  padding: 0;
 }
 
-.product{
-    margin-top: 30px;
-    display: flex;
-    flex-direction: column;
-    background-color: aliceblue;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 10px;
+.building {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(12, 13, 14);
+  gap: 30px;
+  padding: 10px;
+  border-radius: 10px;
+  height: 100%;
 }
 
-.floor{
-    display: flex;
-    gap: 100px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 10px;
-    align-items: center;
+.floor {
+  display: flex;
+  gap: 20px;
+  background-color: rgb(207, 28, 28);
+  height: 100px;
+  align-items: end;
+  width: 100%;
+  position: relative;
 }
 
-.floor .keys {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    cursor: pointer;
+.keys {
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.lift {
+  height: 70%;
+  width: 50px;
+  background-color: black;
+  display: flex;
+  position: relative;
+  overflow-x: hidden;
+}
+
+button {
+  cursor: pointer;
+}
+
+.left-door {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  background-color: yellow;
+}
+
+.left-door-open {
+  animation: doorleft 2.5s linear 2 alternate;
+}
+.right-door-open {
+  animation: doorright 2.5s linear 2 alternate;
+}
+
+.right-door {
+  width: 50%;
+  height: 100%;
+  background-color: blue;
+  position: absolute;
+  right: 0;
+}
+
+@keyframes doorleft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes doorright {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
