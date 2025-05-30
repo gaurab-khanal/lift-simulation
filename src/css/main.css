@@ -48,10 +48,11 @@ body {
 .lift {
   height: 70%;
   width: 50px;
-  background-color: black;
+  background-color: rgb(87, 98, 248);
   display: flex;
   position: relative;
   overflow-x: hidden;
+  z-index: 100;
 }
 
 button {

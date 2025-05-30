@@ -53,6 +53,7 @@ export class GenerateUI {
     for (let i = 0; i < this.noOfLifts; i++) {
       this.lift = document.createElement("div");
       this.lift.classList.add("lift");
+      this.lift.classList.add("floor_" + lastFloorId);
       this.lift.id = `lift_${i}`;
 
       this.createDoors(i);
