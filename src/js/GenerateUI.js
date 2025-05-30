@@ -29,19 +29,20 @@ export class GenerateUI {
     this.keys.classList.add("keys");
 
     // create buttons
-    const upButton = document.createElement("button");
-    upButton.id = "up_" + i;
-    upButton.textContent = "up";
+    if (i != this.noOfFloors - 1) {
+      const upButton = document.createElement("button");
+      upButton.id = "up_" + i;
+      upButton.textContent = "up";
+      this.keys.appendChild(upButton);
+    }
 
-    const downButton = document.createElement("button");
-    downButton.id = "down_" + i;
-    downButton.textContent = "down";
+    if (i != 0) {
+      const downButton = document.createElement("button");
+      downButton.id = "down_" + i;
+      downButton.textContent = "down";
+      this.keys.appendChild(downButton);
+    }
 
-    // add buttons to key
-    this.keys.appendChild(upButton);
-    this.keys.appendChild(downButton);
-
-    // add key to floor
     this.floor.appendChild(this.keys);
   }
 
