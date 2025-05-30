@@ -3,7 +3,7 @@
   justify-content: center;
   gap: 10px;
   height: 100%;
-  background-color: aliceblue;
+  background-color: rgb(255, 255, 255);
   border-radius: 10px;
   padding: 10px;
 }
@@ -19,7 +19,7 @@ body {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  background-color: rgb(12, 13, 14);
+  background-color: rgb(255, 255, 255);
   gap: 30px;
   padding: 10px;
   border-radius: 10px;
@@ -29,11 +29,14 @@ body {
 .floor {
   display: flex;
   gap: 20px;
-  background-color: rgb(207, 28, 28);
+  border-bottom: 1px solid black;
+  background-color: #f0f0f0;
   height: 100px;
   align-items: end;
   width: 100%;
   position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .keys {
@@ -48,7 +51,7 @@ body {
 .lift {
   height: 70%;
   width: 50px;
-  background-color: rgb(87, 98, 248);
+  background-color: #3e596d;
   display: flex;
   position: relative;
   overflow-x: hidden;
@@ -64,7 +67,9 @@ button {
   height: 100%;
   position: absolute;
   left: 0;
-  background-color: yellow;
+  background-color: #808080;
+  border-bottom-right-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 .left-door-open {
@@ -79,7 +84,10 @@ button {
   height: 100%;
   background-color: blue;
   position: absolute;
+  border-bottom-left-radius: 8px;
+  border-top-left-radius: 8px;
   right: 0;
+  background-color: #808080;
 }
 
 @keyframes doorleft {

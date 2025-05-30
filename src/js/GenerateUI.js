@@ -7,6 +7,11 @@ export class GenerateUI {
   }
 
   createBuilding() {
+    const existingBuilding = document.querySelector(".building");
+    if (existingBuilding) {
+      existingBuilding.remove();
+    }
+
     this.building = document.createElement("div");
     this.building.classList.add("building");
     this.createFloors(this.building);
