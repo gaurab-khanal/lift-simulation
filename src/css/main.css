@@ -12,7 +12,7 @@ body {
   background-color: #f0f0f0;
   font-family: Arial, sans-serif;
   margin: 10px;
-  padding: 0;
+  padding: 10px;
 }
 
 .building {
@@ -37,6 +37,7 @@ body {
   position: relative;
   padding-left: 10px;
   padding-right: 10px;
+  box-sizing: border-box;
 }
 
 .keys {
