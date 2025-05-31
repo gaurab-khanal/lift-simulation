@@ -8,6 +8,14 @@
   padding: 10px;
 }
 
+.askdetails > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
 h1 {
   text-align: center;
 }
@@ -112,5 +120,22 @@ button {
   }
   100% {
     transform: translateX(100%);
+  }
+}
+
+@media (max-width: 768px) {
+  .askdetails > div {
+    flex-direction: column;
+  }
+
+  .askdetails {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  body {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
