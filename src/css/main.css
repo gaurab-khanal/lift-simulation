@@ -43,6 +43,7 @@ body {
   padding-left: 10px;
   padding-right: 10px;
   box-sizing: border-box;
+  overflow-x: scroll;
 }
 
 .keys {
@@ -56,7 +57,7 @@ body {
 
 .lift {
   height: 70%;
-  width: 50px;
+  min-width: 50px;
   background-color: #3e596d;
   display: flex;
   position: relative;

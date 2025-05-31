@@ -14,7 +14,7 @@ export class GenerateUI {
 
     this.building = document.createElement("div");
     this.building.classList.add("building");
-    this.createFloors(this.building);
+    this.createFloors();
     document.body.appendChild(this.building);
     this.createLifts();
   }

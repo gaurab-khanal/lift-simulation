@@ -11,12 +11,9 @@ export class Engine {
       eachLiftDetails["run"] = false;
       this.trackLiftMapFloor.push(eachLiftDetails);
     }
+    console.log(this.trackLiftMapFloor);
 
     this.getButtonIdAndFunction();
-  }
-
-  getTrackLiftMapFloor() {
-    console.log(this.trackLiftMapFloor);
   }
 
   getButtonIdAndFunction() {
