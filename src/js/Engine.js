@@ -92,7 +92,6 @@ export class Engine {
   }
 
   async moveLiftAfterFoorUpdate(liftIndex, floorToMove, nextFloorIndex) {
-    await this.animateDoorOnLiftCall(liftIndex);
     // get floor height
     const floor = document.getElementsByClassName("floor")[0];
     const floorHeight = floor.getBoundingClientRect().height;
