@@ -4,6 +4,17 @@ export class GenerateUI {
     this.noOfLifts = noOfLifts;
     this.building = null;
     this.createBuilding();
+    this.makeWidthOfAllFloorSame();
+  }
+
+  makeWidthOfAllFloorSame() {
+    const floors = document.querySelectorAll(".floor");
+    const floorWidths = Array.from(floors).map((floor) => floor.scrollWidth);
+    const maxWidth = Math.max(...floorWidths);
+
+    floors.forEach((floor) => {
+      floor.style.width = maxWidth + "px";
+    });
   }
 
   createBuilding() {

@@ -37,6 +37,7 @@ body {
   padding: 10px;
   border-radius: 10px;
   height: 100%;
+  overflow-x: scroll;
 }
 
 .floor {
@@ -51,7 +52,6 @@ body {
   padding-left: 10px;
   padding-right: 10px;
   box-sizing: border-box;
-  overflow-x: scroll;
 }
 
 .keys {
