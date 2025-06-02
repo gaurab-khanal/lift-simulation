@@ -122,7 +122,9 @@ export class Engine {
               ? Object.keys(matched)[0]?.split("_")[1]
               : null;
             if (liftIndex && !track[liftIndex].run) {
+              this.trackLiftMapFloor[liftIndex].run = true;
               await this.animateDoorOnLiftCall(liftIndex);
+              this.trackLiftMapFloor[liftIndex].run = false;
               break;
             }
             break;
