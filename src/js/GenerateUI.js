@@ -45,14 +45,14 @@ export class GenerateUI {
     this.keys.classList.add("keys");
 
     // create buttons
-    if (i != this.noOfFloors - 1) {
+    if (i != 0) {
       const upButton = document.createElement("button");
       upButton.id = "up_" + i;
       upButton.textContent = "up";
       this.keys.appendChild(upButton);
     }
 
-    if (i != 0) {
+    if (i != this.noOfFloors - 1) {
       const downButton = document.createElement("button");
       downButton.id = "down_" + i;
       downButton.textContent = "down";

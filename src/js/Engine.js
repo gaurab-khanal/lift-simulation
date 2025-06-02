@@ -3,6 +3,8 @@ export class Engine {
     this.noOfFloor = noOfFloor;
     this.noOfLift = noOfLift;
     this.trackLiftMapFloor = [];
+    this.trackPrvBtnFn = [];
+    this.trackPrvFloor = [];
 
     for (let i = 0; i < this.noOfLift; i++) {
       const eachLiftDetails = {};
@@ -11,7 +13,6 @@ export class Engine {
       eachLiftDetails["run"] = false;
       this.trackLiftMapFloor.push(eachLiftDetails);
     }
-    console.log(this.trackLiftMapFloor);
 
     this.getButtonIdAndFunction();
   }
@@ -20,37 +21,129 @@ export class Engine {
     document.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", (event) => {
         const clickId = event.target.id;
-        console.log("ClickedBtn Id: ", clickId);
 
         if (clickId.startsWith("up_")) {
           const split = clickId.split("_");
-          console.log(split);
           this.changeLiftFloorOnButtonClick(split[0], split[1]);
         } else if (clickId.startsWith("down_")) {
           const split = clickId.split("_");
-          console.log(split);
           this.changeLiftFloorOnButtonClick(split[0], split[1]);
         }
       });
     });
   }
 
-  changeLiftFloorOnButtonClick(fn, floor) {
+  hasMoreThanTwoValues(floor) {
+    // return false if it is at ground floor;
+    const floorFullValue = `floor_${floor}`;
+    console.log(floorFullValue);
+    const extractLiftMapFloorArray = this.trackLiftMapFloor.map(
+      (item) => Object.values(item)[0]
+    );
+    console.log(extractLiftMapFloorArray);
+    this.freqMap = {};
+    for (const val of extractLiftMapFloorArray) {
+      this.freqMap[val] = (this.freqMap[val] || 0) + 1;
+    }
+    if (this.freqMap[floorFullValue] >= 2) {
+      return true;
+    } else {
+      false;
+    }
+  }
+
+  async changeLiftFloorOnButtonClick(fn, floor) {
     const track = this.trackLiftMapFloor;
-    console.log("Hello");
+    console.log(typeof floor, typeof this.noOfFloor);
+    if (parseInt(floor) !== parseInt(this.noOfFloor) - 1) {
+      this.trackPrvFloor.push(floor);
+      this.trackPrvBtnFn.push(fn);
+    } else if (this.trackPrvBtnFn.length > 0) {
+      this.trackPrvFloor.push(floor);
+      this.trackPrvBtnFn.push(fn);
+    }
+
     for (let i = 0; i < track.length; i++) {
       console.log(track, floor, fn);
       if (!track[i].run) {
-        track[i].run = true;
+        // find neareast lift of called floor so that only one lift door is opened
+        const targetFloor = `floor_${floor}`;
+        const findNearestLifOfSelectedFloorBtn =
+          this.trackLiftMapFloor.findIndex(
+            (item, i) => item[`lift_${i}`] == targetFloor
+          );
+
+        // check for if  lift exist for any floor
+
+        const isLiftExist = this.trackLiftMapFloor.some(
+          (item, i) => item[`lift_${i}`] == targetFloor
+        );
+        // checking this cause if clicked btn is from floor equal to the total floor then
+        // theres no need to check for multiple lifts as there will be multiple lifts by default on ground floor.
+        console.log(typeof floor, typeof (this.noOfFloor - 1));
+        if (
+          this.hasMoreThanTwoValues(floor) &&
+          parseInt(floor) !== parseInt(this.noOfFloor - 1)
+        ) {
+          if (!this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run) {
+            this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run = true;
+            await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
+            this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run =
+              false;
+          }
+          break;
+        } else if (
+          parseInt(floor) == parseInt(this.noOfFloor - 1) &&
+          this.trackPrvBtnFn.length == 0
+        ) {
+          track[i].run = true;
+          await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
+          track[i].run = false;
+          break;
+        }
+
+        console.log(this.trackPrvBtnFn);
+        // prevents calling more than one lift on same floor for same direction
+        if (this.trackPrvBtnFn.length > 1 && this.trackPrvFloor.length > 1) {
+          console.log(typeof floor, this.noOfFloor - 1);
+          let extractPrvBtn = this.trackPrvBtnFn[this.trackPrvBtnFn.length - 2];
+          let extractPrvFloor =
+            this.trackPrvFloor[this.trackPrvFloor.length - 2];
+          console.log(extractPrvBtn, fn);
+
+          if (extractPrvBtn == fn && extractPrvFloor == floor) {
+            // take the lift index of that floor and animate door
+            // at first take the whole object of matched floor
+            const targetFloor = `floor_${floor}`;
+            const matched = this.trackLiftMapFloor.find(
+              (item) => Object.values(item)[0] === targetFloor
+            );
+            const liftIndex = matched
+              ? Object.keys(matched)[0]?.split("_")[1]
+              : null;
+            if (liftIndex && !track[liftIndex].run) {
+              await this.animateDoorOnLiftCall(liftIndex);
+              break;
+            }
+            break;
+          } else if (
+            isLiftExist &&
+            extractPrvBtn !== fn &&
+            !track[findNearestLifOfSelectedFloorBtn].run
+          ) {
+            track[i].run = true;
+            await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
+            track[i].run = false;
+            break;
+          }
+        }
+
         const currentFloorIndex = track[i][`lift_` + i].split("_")[1];
         track[i][`lift_` + i] = `floor_` + floor;
-        console.log(track[i]);
-        const isMoved = this.movementUpDown(i, currentFloorIndex, floor, fn);
-        if (!isMoved) {
-          track[i].run = false;
-          track[i][`lift_` + i] = `floor_` + currentFloorIndex;
-          continue;
-        }
+        track[i].run = true;
+        this.moveLiftAfterFoorUpdate(i, currentFloorIndex, floor);
+        console.log("Success");
+        // prevents more than two lifts on same floor
         break;
       }
     }
@@ -78,7 +171,6 @@ export class Engine {
     // calculate lift movement down or up if floorToMove is -ve then only down btn should move
     // lift down and if +ve then only up can move lift up.
     const movement = currentFloorIndex - nextFloorIndex;
-    console.log("Movement : ", movement);
     if (floorToMove == 0) return false;
     if (movement < 1 && btn == "down") {
       this.moveLiftAfterFoorUpdate(liftIndex, floorToMove, nextFloorIndex);
@@ -91,10 +183,12 @@ export class Engine {
     }
   }
 
-  async moveLiftAfterFoorUpdate(liftIndex, floorToMove, nextFloorIndex) {
+  async moveLiftAfterFoorUpdate(liftIndex, currentFloorIndex, nextFloorIndex) {
     // get floor height
     const floor = document.getElementsByClassName("floor")[0];
     const floorHeight = floor.getBoundingClientRect().height;
+
+    const floorToMove = Math.abs(currentFloorIndex - nextFloorIndex);
 
     // get gap between each floor
     const building = document.getElementsByClassName("building")[0];
@@ -104,9 +198,7 @@ export class Engine {
     // calculate distn between adjacent floor (bottom of one floor to another )
     const calculetedDistn = floorHeight + floorGap;
     const pixelToMove = (this.noOfFloor - nextFloorIndex - 1) * calculetedDistn;
-    console.log("Pixel to move: ", pixelToMove);
     const getLiftToMove = document.getElementById(`lift_${liftIndex}`);
-    console.log("FloorTo MOve: ", floorToMove);
     getLiftToMove.style.transition = `transform ${floorToMove * 2}s linear`;
     getLiftToMove.style.transform = `translateY(-${pixelToMove}px)`;
 
@@ -114,6 +206,5 @@ export class Engine {
       await this.animateDoorOnLiftCall(liftIndex);
       this.trackLiftMapFloor[liftIndex].run = false;
     }, floorToMove * 2 * 1000);
-    console.log(this.trackLiftMapFloor[liftIndex]);
   }
 }
