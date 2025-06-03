@@ -5,6 +5,7 @@ export class Engine {
     this.trackLiftMapFloor = [];
     this.trackPrvBtnFn = [];
     this.trackPrvFloor = [];
+    this.trackBtnFloorClickOnAllRun = [];
 
     for (let i = 0; i < this.noOfLift; i++) {
       const eachLiftDetails = {};
@@ -20,17 +21,46 @@ export class Engine {
   getButtonIdAndFunction() {
     document.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", (event) => {
-        const clickId = event.target.id;
+        // ✅ Skip the submit button
 
-        if (clickId.startsWith("up_")) {
-          const split = clickId.split("_");
-          this.changeLiftFloorOnButtonClick(split[0], split[1]);
-        } else if (clickId.startsWith("down_")) {
-          const split = clickId.split("_");
-          this.changeLiftFloorOnButtonClick(split[0], split[1]);
+        const clickId = event.target.id;
+        if (clickId === "submitbtn") return;
+
+        const split = clickId.split("_");
+        if (this.checkIfAllRunning()) {
+          // track if already clicked
+          const alreadyQueued = this.trackBtnFloorClickOnAllRun.some(
+            (req) => req.btn === split[0] && req.floor === split[1]
+          );
+          if (alreadyQueued) return;
+          this.trackBtnFloorClickOnAllRun.push({
+            btn: split[0],
+            floor: split[1],
+          });
+          return;
         }
+        this.changeLiftFloorOnButtonClick(split[0], split[1]);
       });
     });
+    this.checkPendingRequestsLoop();
+  }
+
+  checkPendingRequestsLoop() {
+    setInterval(() => {
+      if (
+        !this.checkIfAllRunning() &&
+        this.trackBtnFloorClickOnAllRun.length > 0
+      ) {
+        const nextRequest = this.trackBtnFloorClickOnAllRun.shift();
+        if (nextRequest) {
+          this.changeLiftFloorOnButtonClick(nextRequest.btn, nextRequest.floor);
+        }
+      }
+    }, 1000); // checks every second
+  }
+
+  checkIfAllRunning() {
+    return this.trackLiftMapFloor.every((item) => item.run);
   }
 
   hasMoreThanTwoValues(floor) {
