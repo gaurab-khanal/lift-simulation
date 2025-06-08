@@ -84,13 +84,14 @@ export class Engine {
 
   async changeLiftFloorOnButtonClick(fn, floor) {
     const track = this.trackLiftMapFloor;
-    const targetFloorNum = parseInt(floor);
-    let minDistance = Number.MAX_SAFE_INTEGER;
-    let selectedLiftIndex = -1;
-
     console.log(typeof floor, typeof this.noOfFloor);
-    this.trackPrvFloor.push(floor);
-    this.trackPrvBtnFn.push(fn);
+    if (parseInt(floor) !== parseInt(this.noOfFloor) - 1) {
+      this.trackPrvFloor.push(floor);
+      this.trackPrvBtnFn.push(fn);
+    } else if (this.trackPrvBtnFn.length > 0) {
+      this.trackPrvFloor.push(floor);
+      this.trackPrvBtnFn.push(fn);
+    }
 
     for (let i = 0; i < track.length; i++) {
       console.log(track, floor, fn);
@@ -110,7 +111,10 @@ export class Engine {
         // checking this cause if clicked btn is from floor equal to the total floor then
         // theres no need to check for multiple lifts as there will be multiple lifts by default on ground floor.
         console.log(typeof floor, typeof (this.noOfFloor - 1));
-        if (this.hasMoreThanTwoValues(floor)) {
+        if (
+          this.hasMoreThanTwoValues(floor) &&
+          parseInt(floor) !== parseInt(this.noOfFloor - 1)
+        ) {
           if (!this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run) {
             this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run = true;
             await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
@@ -120,7 +124,7 @@ export class Engine {
           break;
         } else if (
           parseInt(floor) == parseInt(this.noOfFloor - 1) &&
-          isLiftExist
+          this.trackPrvBtnFn.length == 0
         ) {
           track[i].run = true;
           await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
@@ -166,6 +170,9 @@ export class Engine {
           }
         }
 
+        const targetFloorNum = parseInt(floor);
+        let minDistance = Number.MAX_SAFE_INTEGER;
+        let selectedLiftIndex = -1;
         // Find the nearest available lift
         for (let j = i; j < this.trackLiftMapFloor.length; j++) {
           if (!this.trackLiftMapFloor[j].run) {
