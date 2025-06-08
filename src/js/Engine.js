@@ -84,14 +84,13 @@ export class Engine {
 
   async changeLiftFloorOnButtonClick(fn, floor) {
     const track = this.trackLiftMapFloor;
+    const targetFloorNum = parseInt(floor);
+    let minDistance = Number.MAX_SAFE_INTEGER;
+    let selectedLiftIndex = -1;
+
     console.log(typeof floor, typeof this.noOfFloor);
-    if (parseInt(floor) !== parseInt(this.noOfFloor) - 1) {
-      this.trackPrvFloor.push(floor);
-      this.trackPrvBtnFn.push(fn);
-    } else if (this.trackPrvBtnFn.length > 0) {
-      this.trackPrvFloor.push(floor);
-      this.trackPrvBtnFn.push(fn);
-    }
+    this.trackPrvFloor.push(floor);
+    this.trackPrvBtnFn.push(fn);
 
     for (let i = 0; i < track.length; i++) {
       console.log(track, floor, fn);
@@ -111,10 +110,7 @@ export class Engine {
         // checking this cause if clicked btn is from floor equal to the total floor then
         // theres no need to check for multiple lifts as there will be multiple lifts by default on ground floor.
         console.log(typeof floor, typeof (this.noOfFloor - 1));
-        if (
-          this.hasMoreThanTwoValues(floor) &&
-          parseInt(floor) !== parseInt(this.noOfFloor - 1)
-        ) {
+        if (this.hasMoreThanTwoValues(floor)) {
           if (!this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run) {
             this.trackLiftMapFloor[findNearestLifOfSelectedFloorBtn].run = true;
             await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
@@ -124,7 +120,7 @@ export class Engine {
           break;
         } else if (
           parseInt(floor) == parseInt(this.noOfFloor - 1) &&
-          this.trackPrvBtnFn.length == 0
+          isLiftExist
         ) {
           track[i].run = true;
           await this.animateDoorOnLiftCall(findNearestLifOfSelectedFloorBtn);
@@ -170,10 +166,35 @@ export class Engine {
           }
         }
 
-        const currentFloorIndex = track[i][`lift_` + i].split("_")[1];
-        track[i][`lift_` + i] = `floor_` + floor;
-        track[i].run = true;
-        this.moveLiftAfterFoorUpdate(i, currentFloorIndex, floor);
+        // Find the nearest available lift
+        for (let j = i; j < this.trackLiftMapFloor.length; j++) {
+          if (!this.trackLiftMapFloor[j].run) {
+            const liftFloorStr = this.trackLiftMapFloor[j][`lift_${j}`];
+            const liftFloor = parseInt(liftFloorStr.split("_")[1]);
+            const distance = Math.abs(liftFloor - targetFloorNum);
+            if (distance < minDistance) {
+              minDistance = distance;
+              selectedLiftIndex = j;
+            }
+          }
+        }
+
+        if (selectedLiftIndex === -1) {
+          // All lifts are running, queue the request
+          this.trackBtnFloorClickOnAllRun.push({ btn: fn, floor });
+          return;
+        }
+
+        const currentFloorIndex =
+          track[selectedLiftIndex][`lift_` + selectedLiftIndex].split("_")[1];
+        track[selectedLiftIndex][`lift_` + selectedLiftIndex] =
+          `floor_` + floor;
+        track[selectedLiftIndex].run = true;
+        this.moveLiftAfterFoorUpdate(
+          selectedLiftIndex,
+          currentFloorIndex,
+          floor
+        );
         console.log("Success");
         // prevents more than two lifts on same floor
         break;
