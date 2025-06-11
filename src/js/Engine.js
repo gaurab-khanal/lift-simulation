@@ -108,6 +108,7 @@ export class Engine {
         const isLiftExist = this.trackLiftMapFloor.some(
           (item, i) => item[`lift_${i}`] == targetFloor
         );
+
         // checking this cause if clicked btn is from floor equal to the total floor then
         // theres no need to check for multiple lifts as there will be multiple lifts by default on ground floor.
         console.log(typeof floor, typeof (this.noOfFloor - 1));
@@ -168,6 +169,14 @@ export class Engine {
             track[i].run = false;
             break;
           }
+        }
+
+        // only allow 1 lift for 1st and last floor
+        if (
+          (isLiftExist && parseInt(floor) == 0) ||
+          (isLiftExist && parseInt(floor) == parseInt(this.noOfFloor) - 1)
+        ) {
+          return;
         }
 
         const targetFloorNum = parseInt(floor);
