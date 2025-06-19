@@ -25,8 +25,11 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print branch name
-        run: echo "Branch $( steps.pr_branch.outputs.branch ) ${{ steps.pr_branch.outputs.branch  }}"
-     
+        run: echo "Branch $( steps.pr_branch.outputs.branch )"
+
+      - name: Checkout PR branch
+        run: git checkout ${{ steps.pr_branch.outputs.branch }}
+        
       - name: Debug PR branch
         run: echo "Branch:$(git branch --show-current)"
 
@@ -46,5 +49,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin HEAD:${{ steps.pr_branch.outputs.branch }}
           echo "Successfully merged dev into PR branch and pushed the changes to repo PR branch."
