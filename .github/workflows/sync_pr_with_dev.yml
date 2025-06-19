@@ -12,10 +12,14 @@ jobs:
       (github.event.comment.body == '/update' || github.event.comment.body == '/u')
     runs-on: ubuntu-latest
     steps:
-      - name: Extract PR branch name
+      - name: Get PR branch name
         id: pr_branch
-        run: echo "branch=$(jq -r .pull_request.head.ref < $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
-
+        run: |
+          PR_NUMBER=$(jq -r .issue.number < "$GITHUB_EVENT_PATH")
+          BRANCH_NAME=$(gh pr view "$PR_NUMBER" --json headRefName -q ".headRefName")
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print branch name
         run: echo "Branch $( steps.pr_branch.outputs.branch ) ${{ steps.pr_branch.outputs.branch  }}"
       - name: Debug PR branch
