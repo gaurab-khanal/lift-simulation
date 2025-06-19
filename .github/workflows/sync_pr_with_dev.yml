@@ -12,6 +12,10 @@ jobs:
       (github.event.comment.body == '/update' || github.event.comment.body == '/u')
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Get PR branch name
         id: pr_branch
         run: |
@@ -22,12 +26,7 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print branch name
         run: echo "Branch $( steps.pr_branch.outputs.branch ) ${{ steps.pr_branch.outputs.branch  }}"
-      - name: Debug PR branch
-        run: echo "Branch:$(git branch --show-current)"
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+     
       - name: Debug PR branch
         run: echo "Branch:$(git branch --show-current)"
 
