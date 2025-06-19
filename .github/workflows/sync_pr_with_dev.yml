@@ -17,8 +17,9 @@ jobs:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 0
+      - name: Debug PR branch
+        run: echo "Branch:$(git branch --show-current)"
 
       - name: Setup Git user
         run: |
