@@ -16,6 +16,8 @@ jobs:
         id: pr_branch
         run: echo "branch=$(jq -r .pull_request.head.ref < $GITHUB_EVENT_PATH)" >> $GITHUB_OUTPUT
 
+      - name: Print branch name
+        run: echo "Branch $( steps.pr_branch.outputs.branch ) ${{ steps.pr_branch.outputs.branch  }}"
       - name: Debug PR branch
         run: echo "Branch:$(git branch --show-current)"
       - name: Checkout PR branch
